@@ -4,27 +4,40 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     MediaPlayer player;
-    Button playPauseBtn;
-    Button stopBtn;
-    Button fwdBtn;
-    Button rwdBtn;
+
+    Button btnPlayPause;
+    Button btnStop;
+    Button btnFor;
+    Button btnRew;
+    Button btnStart;
+    Button btnEnd;
+    Button btnRepeat;
+
     SeekBar seekBar;
+
     Runnable runnable;
     Handler handler;
-    TextView playerValueTv;
-    TextView seekBarTv;
+
+    TextView tvCurrentPosition;
+    TextView tvTotalDuration;
+    TextView startTv;
+    TextView endTv;
+
+    int startPosition = 0;
+    int endPosition = 0;
+    boolean repeat = false;
+    boolean isRepeating = false;
+
 
     String TAG = "Main Activity";
-
 
 
     @Override
@@ -32,34 +45,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playPauseBtn = (Button) findViewById(R.id.btnPlayPause);
-        stopBtn = (Button) findViewById(R.id.btnStop);
-        fwdBtn = (Button) findViewById(R.id.btnFor);
-        rwdBtn = (Button) findViewById(R.id.btnRew);
+        btnPlayPause = (Button) findViewById(R.id.btnPlayPause);
+        btnStop = (Button) findViewById(R.id.btnStop);
+        btnFor = (Button) findViewById(R.id.btnFor);
+        btnRew = (Button) findViewById(R.id.btnRew);
+        btnRepeat = (Button) findViewById(R.id.btnRepeat);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
-        playerValueTv = (TextView) findViewById(R.id.PlayerValue);
-        seekBarTv = (TextView) findViewById(R.id.seekBarValue);
+        startTv = (TextView) findViewById(R.id.startTv);
+        endTv = (TextView) findViewById(R.id.endTv);
+        btnStart = (Button) findViewById(R.id.startBtn);
+        btnEnd = (Button) findViewById(R.id.endBtn);
+        tvCurrentPosition = (TextView) findViewById(R.id.tvCurrentPosition);
+        tvTotalDuration = (TextView) findViewById(R.id.tvTotalDuration);
         handler = new Handler();
-
-        player = MediaPlayer.create(this, R.raw.alnajm);
-
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                seekBar.setMax(player.getDuration());
-                changeSeekBar();
-            }
-        });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser){
-                    Log.d(TAG, "onProgressChanged: " + progress);
-                    player.seekTo(progress);
-
+                if (fromUser) {
+                    if (player != null) {
+                        player.seekTo(progress);
+                        changeSeekBar();
+                    }
                 }
+                else {
+                    if (repeat && player.getCurrentPosition() >= endPosition){
+                        player.seekTo(startPosition);
+                }
+                }
+
             }
 
             @Override
@@ -73,68 +88,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        playPauseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnPlayPause.setOnClickListener(this);
+        btnStop.setOnClickListener(this);
+        btnFor.setOnClickListener(this);
+        btnRew.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
+        btnEnd.setOnClickListener(this);
+        btnRepeat.setOnClickListener(this);
 
-                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        stopPlayer();
-                    }
-                });
-
-                if (player.isPlaying()){
-                    player.pause();
-                    playPauseBtn.setText("Play");
-                }else {
-                    player.start();
-                    player.seekTo(seekBar.getProgress());
-                    changeSeekBar();
-                    playPauseBtn.setText("Pause");
-
-                }
-            }
-        });
-
-
-
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               stop();
-            }
-        });
-
-        fwdBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (player!=null){
-                    player.seekTo(player.getCurrentPosition()+5000);
-                }
-            }
-        });
-        rwdBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (player != null){
-                    player.seekTo(player.getCurrentPosition()-5000);
-                }
-            }
-        });
 
     }
 
-    public void stop(){
-        if (player != null){
-            stopPlayer();
-        }
-    }
-
-    public void stopPlayer(){
+    public void stopPlayer() {
         if (player != null) {
+            seekBar.setProgress(0);
+            player.seekTo(0);
+            tvCurrentPosition.setText(String.valueOf(0));
             player.release();
+
+
             player = null;
+            btnPlayPause.setText("Play");
         }
     }
 
@@ -143,15 +117,86 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         stopPlayer();
     }
-    private void changeSeekBar() {
-        if (player != null){
-            seekBar.setProgress(player.getCurrentPosition());
 
-            playerValueTv.setText( String.valueOf(player.getCurrentPosition()/1000));
-            seekBarTv.setText(String.valueOf(seekBar.getProgress()/1000));
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case (R.id.btnPlayPause):
+                playPause();
+
+                break;
+            case (R.id.btnStop):
+                stopPlayer();
+
+                break;
+            case (R.id.btnFor):
+                if (player != null) {
+                    player.seekTo(player.getCurrentPosition() + 5000);
+                }
+                break;
+            case (R.id.btnRew):
+                if (player != null) {
+                    player.seekTo(player.getCurrentPosition() - 5000);
+                }
+                break;
+            case (R.id.startBtn):
+                if (player != null){
+                   startPosition = player.getCurrentPosition();
+                   startTv.setText(String.valueOf(startPosition));
+                }
+                break;
+            case (R.id.endBtn):
+            if (player != null){
+                endPosition = player.getCurrentPosition();
+                endTv.setText(String.valueOf(endPosition));
+            }
+            break;
+            case (R.id.btnRepeat):
+            repeatSegment();
+
+            break;
         }
 
-        if (player !=null && player.isPlaying()){
+
+    }
+
+    private void playPause(){
+
+        if (player == null) {
+            player = MediaPlayer.create(this, R.raw.salat);
+            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    seekBar.setMax(player.getDuration());
+                    tvTotalDuration.setText(String.valueOf(player.getDuration()/1000));
+                }
+            });
+            player.start();
+            changeSeekBar();
+            btnPlayPause.setText("Pause");
+        }else
+        if (player.isPlaying()) {
+            player.pause();
+            btnPlayPause.setText("Play");
+        } else {
+            player.start();
+            btnPlayPause.setText("Pause");
+
+        }
+
+    }
+    private void changeSeekBar() {
+        if (player != null) {
+            seekBar.setProgress(player.getCurrentPosition());
+            tvCurrentPosition.setText("" + player.getCurrentPosition()/1000);
+
+
+
+        }
+
+        if (player != null && player.isPlaying()) {
             runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -162,5 +207,24 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void repeatSegment (){
+
+
+        if (player != null){
+
+            if (repeat) {
+                repeat = false;
+                startTv.setText("");
+                endTv.setText("");
+            } else {
+                repeat = true;
+                player.seekTo(startPosition);
+            }
+
+
+
+        }
     }
 }

@@ -6,17 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <TextView
+        android:id="@+id/endTv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/endBtn"
+        app:layout_constraintEnd_toEndOf="@+id/endBtn"
+        app:layout_constraintStart_toStartOf="@+id/endBtn" />
+
     <Button
         android:id="@+id/btnPlayPause"
         android:layout_width="98dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="28dp"
         android:text="Play"
         android:textAllCaps="false"
         app:layout_constraintStart_toEndOf="@+id/btnRew"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/startBtn" />
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -36,80 +46,100 @@
         android:id="@+id/btnFor"
         android:layout_width="98dp"
         android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="28dp"
         android:text="&gt;&gt;"
         android:textAllCaps="false"
         app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/endBtn" />
 
     <Button
         android:id="@+id/btnRew"
         android:layout_width="98dp"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="28dp"
         android:text="&lt;&lt;"
         android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/startBtn" />
 
     <Button
         android:id="@+id/btnStop"
         android:layout_width="98dp"
         android:layout_height="48dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="28dp"
         android:text="Stop"
         android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnRew"
         app:layout_constraintTop_toBottomOf="@+id/btnPlayPause" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvCurrentPosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="204dp"
-        android:layout_marginLeft="204dp"
-        android:layout_marginTop="188dp"
-        android:text="Seekbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/PlayerValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginLeft="44dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="8dp"
         android:text=""
-        app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarValue" />
-
-    <TextView
-        android:id="@+id/seekBarValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="16dp"
-        android:text=""
-        app:layout_constraintStart_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvTotalDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="204dp"
-        android:layout_marginLeft="204dp"
         android:layout_marginTop="8dp"
-        android:text="Player"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="98dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="108dp"
+        android:text="البداية"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <Button
+        android:id="@+id/endBtn"
+        android:layout_width="98dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="108dp"
+        android:text="النهاية"
+        app:layout_constraintStart_toEndOf="@+id/btnRepeat"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <TextView
+        android:id="@+id/startTv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/startBtn"
+        app:layout_constraintEnd_toEndOf="@+id/startBtn"
+        app:layout_constraintStart_toStartOf="@+id/startBtn" />
+
+    <Button
+        android:id="@+id/btnRepeat"
+        android:layout_width="98dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="108dp"
+        android:text="كرر"
+        app:layout_constraintStart_toEndOf="@+id/startBtn"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
 </android.support.constraint.ConstraintLayout>
